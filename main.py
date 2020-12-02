@@ -4,19 +4,36 @@ import math
 
 def run(day, year=2020):
     print(f"AOC {year} Day {day}")
+    print()
 
     padded_day = str(day).zfill(2)
 
     mod = __import__(padded_day)
     data = get_data(f'{padded_day}.txt')
+    _test_data = get_data(f'{padded_day}.test')
+    part_1_ans = int(_test_data[0])
+    part_2_ans = int(_test_data[1])
+    test_data = _test_data[2:]
 
-    part_1_time = run_part(1, mod, data)
-    part_2_time = run_part(2, mod, data)
+    test_1_res, _ = run_part(1, mod, test_data)
+    if test_1_res == part_1_ans:
+        res, time = run_part(1, mod, data)
+        print_execution(1, res, time)
+    else:
+        print('fail test 1')
+    test_2_res, _ = run_part(2, mod, test_data)
+    if test_2_res == part_2_ans:
+        res, time = run_part(2, mod, data)
+        print_execution(2, res, time)
+    else:
+        print('fail test 2')
 
-    total_time = part_1_time + part_2_time
 
-    if part_1_time != 0 and part_2_time != 0:
-        print(f"Total time: {total_time:.4f}ms")
+def print_execution(part, res, time):
+    print(f"Part {part}")
+    print(f"Output: {res}")
+    print(f"Output: {time:.4f}ms")
+    print()
 
 
 def get_data(fname):
@@ -27,7 +44,6 @@ def get_data(fname):
     except Exception as e:
         raise ValueError(f"Unable to read file {fname}") from e
 
-    print(f"Loaded puzzle input from {fname}\n")
     return data
 
 
@@ -36,21 +52,13 @@ def run_part(part, mod, data):
 
     f = getattr(mod, funcname, None)
     if callable(f):
-        print(f"Part {part}")
-
         t0 = time.perf_counter()
         val = f(data)
         t1 = time.perf_counter()
+        return val, (t1 - t0) * 1000
 
-        print(f"Output: {val}")
-        rtime = (t1 - t0) * 1000
-        print(f"Time {rtime:.4f}ms\n")
-        return rtime
-    else:
-        print(f"No {funcname} function")
-        return 0
-
-    return rtime
+    print(f"No {funcname} function")
+    return None, 0
 
 
 import sys
