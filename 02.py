@@ -5,11 +5,7 @@ from collections import Counter
 def part1(data):
     acc = 0
     for line in data:
-        m = re.match(r'(\d+)-(\d+) ([a-z]): ([a-z]+)', line)
-        min_count = int(m.group(1))
-        max_count = int(m.group(2))
-        char = m.group(3)
-        password = m.group(4)
+        (min_count, max_count, char, password) = parse(line)
 
         count = Counter(password)[char]
 
@@ -22,13 +18,19 @@ def part1(data):
 def part2(data):
     acc = 0
     for line in data:
-        m = re.match(r'(\d+)-(\d+) ([a-z]): ([a-z]+)', line)
-        i1 = int(m.group(1)) - 1
-        i2 = int(m.group(2)) - 1
-        char = m.group(3)
-        password = m.group(4)
+        (i, j, char, password) = parse(line)
 
-        if (password[i1] == char) ^ (password[i2] == char):
+        if (password[i - 1] == char) ^ (password[j - 1] == char):
             acc += 1
 
     return acc
+
+
+def parse(line):
+    m = re.match(r'(\d+)-(\d+) ([a-z]): ([a-z]+)', line)
+    min_count = int(m.group(1))
+    max_count = int(m.group(2))
+    char = m.group(3)
+    password = m.group(4)
+
+    return (min_count, max_count, char, password)
