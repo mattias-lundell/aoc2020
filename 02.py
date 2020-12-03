@@ -27,10 +27,9 @@ def part2(data):
 
 
 def parse(line):
-    m = re.match(r'(\d+)-(\d+) ([a-z]): ([a-z]+)', line)
-    min_count = int(m.group(1))
-    max_count = int(m.group(2))
-    char = m.group(3)
-    password = m.group(4)
+    min_cnt, max_cnt, char, pwd = re.match(
+        r'(\d+)-(\d+) ([a-z]): ([a-z]+)',
+        line,
+    ).groups()
 
-    return (min_count, max_count, char, password)
+    return (int(min_cnt), int(max_cnt), char, pwd)
