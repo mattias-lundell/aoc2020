@@ -21,14 +21,14 @@ def run(day, year=2020):
         res, time = run_part(1, mod, data)
         print_execution(1, res, time)
     else:
-        print('fail test 1')
+        print(f'fail test 1: was {test_1_res} expected {part_1_ans}')
         return
     test_2_res, _ = run_part(2, mod, test_data)
     if test_2_res == part_2_ans:
         res, time = run_part(2, mod, data)
         print_execution(2, res, time)
     else:
-        print('fail test 2')
+        print(f'fail test 2: was {test_2_res} expected {part_2_ans}')
 
 
 def print_execution(part, res, time):
@@ -41,12 +41,9 @@ def print_execution(part, res, time):
 def get_data(fname):
     try:
         with open(fname, "r") as f:
-            data = f.readlines()
-
+            return [l.strip() for l in f.readlines()]
     except Exception as e:
         raise ValueError(f"Unable to read file {fname}") from e
-
-    return data
 
 
 def run_part(part, mod, data):
