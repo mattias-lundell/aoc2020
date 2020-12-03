@@ -9,7 +9,7 @@ def run(day, year=2020):
     padded_day = str(day).zfill(2)
 
     mod = __import__(padded_day)
-    data = get_data(f'{padded_day}.txt')
+    data = None
     _test_data = get_data(f'{padded_day}.test')
     part_1_ans = int(_test_data[0])
     part_2_ans = int(_test_data[1])
@@ -17,10 +17,12 @@ def run(day, year=2020):
 
     test_1_res, _ = run_part(1, mod, test_data)
     if test_1_res == part_1_ans:
+        data = get_data(f'{padded_day}.txt')
         res, time = run_part(1, mod, data)
         print_execution(1, res, time)
     else:
         print('fail test 1')
+        return
     test_2_res, _ = run_part(2, mod, test_data)
     if test_2_res == part_2_ans:
         res, time = run_part(2, mod, data)
