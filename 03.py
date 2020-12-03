@@ -13,22 +13,11 @@ def part2(data):
 
 
 def solve(data, dx, dy):
-    repeats = len(data) + 1
-
-    grid = []
-    for row in data:
-        grid.append(repeats * row.strip())
-
-    x = 0
-    y = 0
-    cnt = 0
-    while True:
-        if grid[y][x] == '#':
+    x = y = cnt = 0
+    while y < len(data):
+        if data[y][x] == '#':
             cnt += 1
-        x += dx
         y += dy
-
-        if y >= len(grid):
-            break
+        x = (x + dx) % len(data[0])
 
     return (cnt)
