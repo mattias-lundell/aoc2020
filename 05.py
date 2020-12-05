@@ -6,44 +6,22 @@
 
 
 def part1(data):
-    max_seat = -1
-    for l in data:
-        row = l[:7]
-        col = l[7:]
-
-        row = row.replace('B', '1')
-        row = row.replace('F', '0')
-
-        col = col.replace('L', '0')
-        col = col.replace('R', '1')
-
-        seat = int(row, 2) * 8 + int(col, 2)
-
-        max_seat = max(max_seat, seat)
-
-    return max_seat
+    return max(get_seats(data))
 
 
-def part2(data):
-    max_seat = -1
+def get_seats(data):
     seats = []
-    for l in data:
-        row = l[:7]
-        col = l[7:]
-
-        row = row.replace('B', '1')
-        row = row.replace('F', '0')
-
-        col = col.replace('L', '0')
-        col = col.replace('R', '1')
+    for line in data:
+        row = line[:7].replace('B', '1').replace('F', '0')
+        col = line[7:].replace('L', '0').replace('R', '1')
 
         seats.append(int(row, 2) * 8 + int(col, 2))
 
-    seats = sorted(seats)
+    return sorted(seats)
 
-    min_seat = min(seats)
-    max_seat = max(seats)
 
-    all_seats = set(range(min_seat, max_seat + 1))
+def part2(data):
+    seats = set(get_seats(data))
+    all_seats = set(range(min(seats), max(seats) + 1))
 
-    return list((all_seats - set(seats)))[0]
+    return (all_seats - seats).pop()
