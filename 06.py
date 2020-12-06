@@ -1,14 +1,15 @@
 def part1(data):
-    sum = 0
-    for answer in [x.replace('\n', '') for x in '\n'.join(data).split('\n\n')]:
-        sum += len(set(answer))
+    return sum([len(set(answer.replace('\n', ''))) for answer in prep(data)])
 
-    return sum
+
+def prep(data):
+    return '\n'.join(data).split('\n\n')
 
 
 def part2(data):
-    sum = 0
-    for answer in [x for x in '\n'.join(data).split('\n\n')]:
-        sum += len(set.intersection(*[set(a) for a in (answer.split('\n'))]))
-
-    return sum
+    return sum([
+        len(
+            set.intersection(
+                *[set(answer) for answer in (answers.split('\n'))]))
+        for answers in prep(data)
+    ])
