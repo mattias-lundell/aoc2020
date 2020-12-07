@@ -1,25 +1,14 @@
 import re
 
+ROOT = 'shiny gold'
+
 
 def part1(data):
-    tree = {}
-    for d in data:
-        d = d.replace('bags', '').replace('bag', '').replace('.', '')
-        re.match(r'(\w+) bags contain (\d \w \w)+', d)
-        d = [a.strip() for a in d.split('contain')]
-        head = d[0]
-        tail = [a.strip() for a in d[1].split(',')]
-        tail = [(a.split(' ')[0], ' '.join(a.split(' ')[1:])) for a in tail]
-        if tail == [('no', 'other')]:
-            tail = [(0, None)]
-
-        tree[head] = tail
+    G = parse(data)
 
     cnt = 0
-    for root in tree.keys():
-        if root != 'shiny gold':
-            if contains(tree, root, 'shiny gold'):
-                cnt += 1
+    for root in G.keys() - set([ROOT]):
+        cnt += int(contains(G, root, ROOT))
 
     return cnt
 
@@ -34,25 +23,30 @@ def contains(tree, root, key):
 
 
 def part2(data):
-    tree = {}
-    for d in data:
-        d = d.replace('bags', '').replace('bag', '').replace('.', '')
-        re.match(r'(\w+) bags contain (\d \w \w)+', d)
-        d = [a.strip() for a in d.split('contain')]
-        head = d[0]
-        tail = [a.strip() for a in d[1].split(',')]
-        tail = [(a.split(' ')[0], ' '.join(a.split(' ')[1:])) for a in tail]
-        if tail == [('no', 'other')]:
-            tail = [(0, None)]
-
-        tree[head] = tail
-
-    return s(tree, 'shiny gold')
+    return bag_count(parse(data), ROOT)
 
 
-def s(tree, root):
+def bag_count(tree, root):
     if root is None:
         return 0
     else:
-        return sum([(int(c) + int(c) * s(tree, new))
+        return sum([(int(c) + int(c) * bag_count(tree, new))
                     for (c, new) in tree[root]])
+
+
+def parse(data):
+    G = {}
+    for d in data:
+        root = re.findall(r'^(\w+ \w+)', d)[0]
+        children = []
+        if 'no other' in d:
+            children = [(0, None)]
+        else:
+            children = [
+                (int(count), color)
+                for _, count, color in re.findall(r'((\d) (\w+ \w+))', d)
+            ]
+
+        G[root] = children
+
+    return G
