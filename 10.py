@@ -24,26 +24,16 @@ def part1(data):
 
 def part2(data):
     adapters = sorted(ints(data))
-    cache = {}
 
-    def solve(adapters=[], start=0, target=0):
-        key = (len(adapters), start)
-        if key in cache:
-            return cache[key]
+    def solve(adapters=[]):
+        d = {0: 1}
+        for adapter in adapters:
+            d[adapter] = sum([
+                d.get(adapter - 1, 0),
+                d.get(adapter - 2, 0),
+                d.get(adapter - 3, 0),
+            ])
 
-        if len(adapters) == 0:
-            return 1 if target - start <= 3 else 0
+        return d[adapters[-1]]
 
-        cnt = 0
-        head = adapters[0]
-        # include head
-        if head - start <= 3:
-            cnt = solve(adapters[1:], head, target)
-        # ignore head
-        cnt += solve(adapters[1:], start, target)
-
-        cache[key] = cnt
-
-        return cnt
-
-    return solve(adapters, 0, max(adapters) + 3)
+    return solve(adapters)
