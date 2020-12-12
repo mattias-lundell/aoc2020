@@ -1,8 +1,5 @@
 def part1(data):
-    def step(d, orientation, x, y):
-        action = d[0]
-        value = int(d[1:])
-
+    def step(action, value, orientation, x, y):
         if action == 'N':
             y += value
         elif action == 'S':
@@ -22,7 +19,7 @@ def part1(data):
                 180: 'S',
                 270: 'W',
             }[orientation]
-            return step(f'{direction}{value}', orientation, x, y)
+            return step(direction, value, orientation, x, y)
 
         return orientation, x, y
 
@@ -30,16 +27,15 @@ def part1(data):
     x = y = 0
 
     for d in data:
-        orientation, x, y = step(d, orientation, x, y)
+        action = d[0]
+        value = int(d[1:])
+        orientation, x, y = step(action, value, orientation, x, y)
 
     return abs(x) + abs(y)
 
 
 def part2(data):
-    def step(d, wx, wy, sx, sy):
-        action = d[0]
-        value = int(d[1:])
-
+    def step(action, value, wx, wy, sx, sy):
         if action == 'N':
             wy += value
         elif action == 'S':
@@ -67,10 +63,12 @@ def part2(data):
         return wx, wy, sx, sy
 
     sx = sy = 0
-    x = 10
-    y = 1
+    wx = 10
+    wy = 1
 
     for d in data:
-        x, y, sx, sy = step(d, x, y, sx, sy)
+        action = d[0]
+        value = int(d[1:])
+        wx, wy, sx, sy = step(action, value, wx, wy, sx, sy)
 
     return abs(sx) + abs(sy)
