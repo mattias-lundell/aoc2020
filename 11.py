@@ -1,6 +1,3 @@
-from copy import deepcopy
-
-
 def part1(data):
     seats = [list(lines) for lines in data]
 
@@ -50,17 +47,14 @@ def count_occupied_adjacent(seats, row, col):
     rows = len(seats)
     cols = len(seats[0])
     cnt = 0
-    for d_row in [-1, 0, 1]:
-        for d_col in [-1, 0, 1]:
-            if d_row == 0 and d_col == 0:
-                continue
-            else:
-                _row = row + d_row
-                _col = col + d_col
-                if _row < 0 or _row >= rows or _col < 0 or _col >= cols:
-                    continue
-                if seats[_row][_col] == '#':
-                    cnt += 1
+    for [d_row, d_col] in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1),
+                           (1, -1), (1, 0), (1, 1)]:
+        _row = row + d_row
+        _col = col + d_col
+        if _row < 0 or _row >= rows or _col < 0 or _col >= cols:
+            continue
+        if seats[_row][_col] == '#':
+            cnt += 1
     return cnt
 
 
@@ -94,22 +88,19 @@ def count_adjacent_part2(seats, row, col, n_max):
     cnt = 0
     rows = len(seats)
     cols = len(seats[0])
-    for d_row in [-1, 0, 1]:
-        for d_col in [-1, 0, 1]:
-            if d_row == 0 and d_col == 0:
-                continue
-            else:
-                for n in range(1, n_max):
-                    _row = row + n * d_row
-                    _col = col + n * d_col
-                    if _row < 0 or _row >= rows or _col < 0 or _col >= cols:
-                        continue
+    for [d_row, d_col] in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1),
+                           (1, -1), (1, 0), (1, 1)]:
+        for n in range(1, n_max):
+            _row = row + n * d_row
+            _col = col + n * d_col
+            if _row < 0 or _row >= rows or _col < 0 or _col >= cols:
+                break
 
-                    _seat = seats[_row][_col]
-                    if _seat == '#':
-                        cnt += 1
-                        break
-                    elif _seat == 'L':
-                        break
+            _seat = seats[_row][_col]
+            if _seat == '#':
+                cnt += 1
+                break
+            elif _seat == 'L':
+                break
 
     return cnt
