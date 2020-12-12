@@ -1,74 +1,61 @@
+import cmath
+
+
 def part1(data):
-    def step(action, value, orientation, x, y):
-        if action == 'N':
-            y += value
-        elif action == 'S':
-            y -= value
-        elif action == 'E':
-            x += value
-        elif action == 'W':
-            x -= value
-        elif action == 'L':
-            orientation = (orientation - value) % 360
-        elif action == 'R':
-            orientation = (orientation + value) % 360
-        elif action == 'F':
-            direction = {
-                0: 'N',
-                90: 'E',
-                180: 'S',
-                270: 'W',
-            }[orientation]
-            return step(direction, value, orientation, x, y)
-
-        return orientation, x, y
-
-    orientation = 90
-    x = y = 0
+    pos = complex(0, 0)
+    orientation = complex(0, 1)
 
     for d in data:
         action = d[0]
         value = int(d[1:])
-        orientation, x, y = step(action, value, orientation, x, y)
 
-    return abs(x) + abs(y)
+        if action == 'N':
+            pos += value
+        elif action == 'S':
+            pos -= value
+        elif action == 'E':
+            pos += complex(0, value)
+        elif action == 'W':
+            pos -= complex(0, value)
+        elif action == 'L':
+            orientation *= degree_to_complex(360 - value)
+        elif action == 'R':
+            orientation *= degree_to_complex(value)
+        elif action == 'F':
+            pos += orientation * value
+
+    return int(abs(pos.real) + abs(pos.imag))
+
+
+def degree_to_complex(degree):
+    return {
+        90: complex(0, 1),
+        180: complex(-1, 0),
+        270: complex(0, -1),
+    }[degree]
 
 
 def part2(data):
-    def step(action, value, wx, wy, sx, sy):
-        if action == 'N':
-            wy += value
-        elif action == 'S':
-            wy -= value
-        elif action == 'E':
-            wx += value
-        elif action == 'W':
-            wx -= value
-        elif action == 'L':
-            (wx, wy) = {
-                90: (-wy, wx),
-                180: (-wx, -wy),
-                270: (wy, -wx),
-            }[value]
-        elif action == 'R':
-            (wx, wy) = {
-                90: (wy, -wx),
-                180: (-wx, -wy),
-                270: (-wy, wx),
-            }[value]
-        elif action == 'F':
-            sx += value * wx
-            sy += value * wy
-
-        return wx, wy, sx, sy
-
-    sx = sy = 0
-    wx = 10
-    wy = 1
+    pos = complex(0, 0)
+    way = complex(1, 10)
 
     for d in data:
         action = d[0]
         value = int(d[1:])
-        wx, wy, sx, sy = step(action, value, wx, wy, sx, sy)
 
-    return abs(sx) + abs(sy)
+        if action == 'N':
+            way += value
+        elif action == 'S':
+            way -= value
+        elif action == 'E':
+            way += complex(0, value)
+        elif action == 'W':
+            way -= complex(0, value)
+        elif action == 'L':
+            way *= degree_to_complex(360 - value)
+        elif action == 'R':
+            way *= degree_to_complex(value)
+        elif action == 'F':
+            pos += way * value
+
+    return int(abs(pos.real) + abs(pos.imag))
