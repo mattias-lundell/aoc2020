@@ -5,23 +5,26 @@ mask_re = re.compile(r'mask = (\w+)')
 mem_re = re.compile(r'mem\[(\d+)] = (\d+)')
 
 
-def get_mask(line):
+def get_mask(line, filter=set()):
     mask = mask_re.match(line)
     sets = {}
     for i, c in enumerate(reversed(mask.group(1))):
-        if c != 'X':
+        if c not in filter:
             sets[i] = c
 
     return sets
 
 
+def mask(m):
+    return {k: v for k, v in m.items() if v != 'X'}
+
+
 def part1(data):
-    res = 0
     mem = {}
-    sets = {}
+    mask = {}
     for line in data:
         if line.startswith('mask'):
-            sets = get_mask(line)
+            mask = get_mask(line, set('X'))
         else:
             match = mem_re.match(line)
 
@@ -29,8 +32,8 @@ def part1(data):
             val = int(match.group(2))
 
             val = list(reversed(list(bin(val)[2:].zfill(36))))
-            for s in sets:
-                val[s] = sets[s]
+            for k, v in mask.items():
+                val[k] = v
 
             mem[addr] = int(''.join(reversed(val)), 2)
 
@@ -38,7 +41,6 @@ def part1(data):
 
 
 def part2(data):
-    res = 0
     mem = {}
     masks = {}
     for line in data:
