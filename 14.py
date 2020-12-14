@@ -15,10 +15,6 @@ def get_mask(line, filter=set()):
     return sets
 
 
-def mask(m):
-    return {k: v for k, v in m.items() if v != 'X'}
-
-
 def part1(data):
     mem = {}
     mask = {}
