@@ -1,17 +1,21 @@
 import re
+from itertools import product
+
+mask_re = re.compile(r'mask = (\w+)')
+mem_re = re.compile(r'mem\[(\d+)] = (\d+)')
+
+
+def get_mask(line):
+    mask = mask_re.match(line)
+    sets = {}
+    for i, c in enumerate(reversed(mask.group(1))):
+        if c != 'X':
+            sets[i] = c
+
+    return sets
 
 
 def part1(data):
-    def get_mask(line):
-        mask = re.match(r'mask = (\w+)', line)
-        sets = {}
-        for i, c in enumerate(reversed(mask.group(1))):
-            if c != 'X':
-                sets[i] = c
-
-        return sets
-
-    pattern = r'mem\[(\d+)\] = (\d+)'
     res = 0
     mem = {}
     sets = {}
@@ -19,25 +23,21 @@ def part1(data):
         if line.startswith('mask'):
             sets = get_mask(line)
         else:
-            match = re.match(pattern, line)
-            addr = int(match.group(1))
-            val = list(reversed(list(bin(int(match.group(2)))[2:].zfill(36))))
+            match = mem_re.match(line)
 
+            addr = int(match.group(1))
+            val = int(match.group(2))
+
+            val = list(reversed(list(bin(val)[2:].zfill(36))))
             for s in sets:
                 val[s] = sets[s]
 
-            mem[addr] = val
+            mem[addr] = int(''.join(reversed(val)), 2)
 
-    for val in mem.values():
-        val = ''.join(reversed(val))
-
-        res += int(val, 2)
-
-    return res
+    return sum(mem.values())
 
 
 def part2(data):
-    pattern = r'mem\[(\d+)\] = (\d+)'
     res = 0
     mem = {}
     masks = {}
@@ -45,19 +45,17 @@ def part2(data):
         if line.startswith('mask'):
             masks = get_masks(line)
         else:
-            match = re.match(pattern, line)
+            match = mem_re.match(line)
+
+            addr = int(match.group(1))
             val = int(match.group(2))
 
-            addr = list(reversed(list(bin(int(match.group(1)))[2:].zfill(36))))
+            addr = list(reversed(list(bin(addr)[2:].zfill(36))))
             addrs = addresses(masks, addr)
             for addr in addrs:
                 mem[addr] = val
 
-    for val in mem.values():
-
-        res += int(val)
-
-    return res
+    return sum(mem.values())
 
 
 def addresses(masks, address):
@@ -70,11 +68,8 @@ def addresses(masks, address):
     return res
 
 
-from itertools import product
-
-
 def get_masks(line):
-    mask = re.match(r'mask = (\w+)', line)
+    mask = mask_re.match(line)
     sets = {}
     floating = []
     masks = []
