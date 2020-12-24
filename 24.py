@@ -1,3 +1,8 @@
+import itertools
+from collections import Counter
+from functools import lru_cache
+
+
 class Cube:
     def __init__(self, x=0, y=0, z=0):
         self.x = x
@@ -51,6 +56,7 @@ class Cube:
         return self
 
     @property
+    @lru_cache(maxsize=None)
     def neighbours(self):
         return [
             Cube(self.x + 1, self.y - 1, self.z),
@@ -103,12 +109,7 @@ def part1(data):
         else:
             black.add(c)
 
-    print(len(black))
     return len(black)
-
-
-import itertools
-from collections import Counter
 
 
 def part2(data):
@@ -140,6 +141,5 @@ def part2(data):
                 new_black.add(c)
 
         black = new_black
-        print(len(black))
 
     return len(black)
